@@ -1,0 +1,45 @@
+﻿<Window x:Class="TestLeakingApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="clr-namespace:TestLeakingApp"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <ResourceDictionary>
+            <conv:TypeNameToDataTemplateSelector x:Key="TypeNameToDataTemplateConverter">
+                <conv:TypeNameToDataTemplateSelector.PointTemplate>
+                    <DataTemplate >
+                        <Ellipse Width="10" Height="10" StrokeThickness="1"
+                             Stroke="{Binding Color}" Fill="{Binding Color}" >
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </DataTemplate>
+                </conv:TypeNameToDataTemplateSelector.PointTemplate>
+                <conv:TypeNameToDataTemplateSelector.LineTemplate>
+                    <DataTemplate >
+                        <Line X1="{Binding X}" Y1="{Binding Y}"  X2="{Binding X2}" Y2="{Binding Y2}" StrokeThickness="2"
+                             Stroke="{Binding Color}" Fill="{Binding Color}" >
+                            <Line.RenderTransform>
+                                <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
+                            </Line.RenderTransform>
+                        </Line>
+                    </DataTemplate>
+                </conv:TypeNameToDataTemplateSelector.LineTemplate>
+            </conv:TypeNameToDataTemplateSelector>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <ItemsControl ItemsSource="{Binding Figures}" HorizontalAlignment="Stretch" Name="canvas1" VerticalAlignment="Stretch" Margin="0,0,0,30"
+                      ItemTemplateSelector="{StaticResource TypeNameToDataTemplateConverter}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        
+        <Button Height="30" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Do Some Work" Padding="10,0"
+                Command="{Binding WorkCommand}" />
+    </Grid>
+</Window>
